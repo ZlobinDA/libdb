@@ -9,7 +9,7 @@
 
 class IDataBase {
 protected:
-	bool _status{ false };	/**< статус подключения к базе данных */
+	bool _isOpen{ false };	/**< статус подключения к базе данных */
 
 	virtual ~IDataBase() = default;
 

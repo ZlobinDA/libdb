@@ -24,7 +24,7 @@ DataBase::DataBase(const std::string& path) : _path{ path } {
 		disconnect();
 	}
 	else {
-		_status = true;
+		_isOpen = true;
 	}
 }
 
@@ -33,7 +33,7 @@ DataBase::~DataBase() {
 }
 
 bool DataBase::get_connection_status() const {
-	return _status;
+	return _isOpen;
 }
 
 std::string DataBase::get_error_message() const {
