@@ -33,6 +33,9 @@ public:
 	/** Метод возвращает описание ошибки, возникшей при выполнении операции. */
 	std::string get_error_message() const override;
 
+	/** Метод создает таблицу для записи 3-х мерного массива. */
+	virtual std::any make_table_3d(const std::string& table_name);
+
 	/** Выполнение запроса к базе данных. */
-	void make_query() override;
+	void make_query(const std::string& query) override;
 };

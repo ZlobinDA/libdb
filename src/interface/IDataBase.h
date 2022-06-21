@@ -10,6 +10,7 @@
 class IDataBase {
 protected:
 	bool _isOpen{ false };	/**< статус подключени€ к базе данных */
+	std::string _message;	/**< отладочное сообщение */
 
 	virtual ~IDataBase() = default;
 
@@ -26,5 +27,5 @@ protected:
 	virtual std::string get_error_message() const = 0;
 
 	/** ћетод выполн€ет запроса к базе данных. */
-	virtual void make_query() = 0;
+	virtual void make_query(const std::string& query) = 0;
 };
