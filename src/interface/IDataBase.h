@@ -7,6 +7,8 @@
 #include <any>
 #include <string>
 
+enum class QueryStatus { Success, Error };
+
 class IDataBase {
 protected:
 	bool _isOpen{ false };	/**< статус подключения к базе данных */
@@ -27,5 +29,5 @@ protected:
 	virtual std::string get_error_message() const = 0;
 
 	/** Метод выполняет запроса к базе данных. */
-	virtual void make_query(const std::string& query) = 0;
+	virtual QueryStatus make_query(const std::string& query) = 0;
 };

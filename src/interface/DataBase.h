@@ -12,6 +12,13 @@
 #include <memory>
 #include <variant>
 
+/** Ќазвани€ колонок таблицы */
+inline constexpr std::string_view id_name = "id";
+inline constexpr std::string_view index1_name = "index1";
+inline constexpr std::string_view index2_name = "index2";
+inline constexpr std::string_view index3_name = "index3";
+inline constexpr std::string_view value_name = "value";
+
 class DataBase : public IDataBase {
 private:
 	std::string _path;				/**< полный путь до файла базы данных */
@@ -34,8 +41,11 @@ public:
 	std::string get_error_message() const override;
 
 	/** ћетод создает таблицу дл€ записи 3-х мерного массива. */
-	virtual std::any make_table_3d(const std::string& table_name);
+	QueryStatus make_table_3d(const std::string& table_name);
+
+	/** ћетод добавл€ет вещественные данные в таблицу с 3-х мерным массивом. */
+	QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name);
 
 	/** ¬ыполнение запроса к базе данных. */
-	void make_query(const std::string& query) override;
+	QueryStatus make_query(const std::string& query) override;
 };

@@ -40,30 +40,42 @@ std::string DataBase::get_error_message() const {
 	return sqlite3_errmsg(_dataBase);
 }
 
-std::any DataBase::make_table_3d(const std::string& table_name) {
-	const std::string id_name = "id";
-	const std::string index1_name = "index1";
-	const std::string index2_name = "index2";
-	const std::string index3_name = "index3";
-	const std::string value_name = "value";
+QueryStatus DataBase::make_table_3d(const std::string& table_name) {
+	// Внимание! Номер строки (id) будет добавлен автоматически.
 	std::string query = "CREATE TABLE IF NOT EXISTS " + table_name + " ( \
-		" + id_name + " INT PRIMARY KEY NOT NULL, \
-		" + index1_name + " INT NOT NULL, \
-		" + index2_name + " INT NOT NULL, \
-		" + index3_name + " INT NOT NULL, \
-		" + value_name + " REAL NOT NULL \
+		" + index1_name.data() + " INT, \
+		" + index2_name.data() + " INT, \
+		" + index3_name.data() + " INT, \
+		" + value_name.data() + " REAL \
 		);";
 
-	make_query(query);
-
-	return std::any();
+	return make_query(query);
 }
 
-void DataBase::make_query(const std::string& query) {
+QueryStatus DataBase::insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) {
+	// Внимание! Увеличение номера строки (id) происходит автоматически.
+	std::string query = "INSERT INTO " + name
+		+ "("  + index1_name.data()
+		+ ", " + index2_name.data()
+		+ ", " + index3_name.data()
+		+ ", " + value_name.data() + ") "  \
+		"VALUES ("
+		+ std::to_string(index1)
+		+ ", " + std::to_string(index2)
+		+ ", " + std::to_string(index3)
+		+ ", " + std::to_string(value)
+		+ "); ";
+
+	return make_query(query);
+}
+
+QueryStatus DataBase::make_query(const std::string& query) {
 	char* error = 0;
 	if (sqlite3_exec(_dataBase, query.c_str(), nullptr, nullptr, &error)) {
 		_message.clear();
 		_message = error;
 		sqlite3_free(error);
+		return QueryStatus::Error;
 	}
+	return QueryStatus::Success;
 }

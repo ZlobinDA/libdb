@@ -14,35 +14,43 @@ int main() {
 	// Создаем файл базы данных.
 	const std::string dbPath = "test_db.db";
 	auto testDB = std::make_unique<DataBase>(dbPath);
+	if (testDB->get_connection_status()) {
+		std::cout << "Successful connection with data base " << dbPath << std::endl;
+	}
+	else {
+		std::cout << "Error in connection with data base " << dbPath << std::endl;
+		return 1;
+	}
 
+	// Создаем таблицу.
 	const std::string table_name = "TestTable";
-	testDB->make_table_3d(table_name);
+	if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
+		std::cout << "Table is made successfully: " << table_name << std::endl;
+	}
+	else {
+		std::cout << "Errror at creating table: " << table_name << std::endl;
+		return 1;
+	}
 
-	const std::string id_name = "id";
-	const std::string index1_name = "index1";
-	const std::string index2_name = "index2";
-	const std::string index3_name = "index3";
-	const std::string value_name = "value";
-
-	int id = 1;
-	int index1 = 1;
-	int index2 = 1;
-	int index3 = 1;
-	double value = 0.0;
-
-	std::string query = "INSERT INTO " + table_name
-		+ " (" + id_name
-		+ ", " + index1_name
-		+ ", " + index2_name
-		+ ", " + index3_name
-		+ ", " + value_name + ") "  \
-		"VALUES ("
-		+ std::to_string(id)
-		+ ", " + std::to_string(index1)
-		+ ", " + std::to_string(index2)
-		+ ", " + std::to_string(index3)
-		+ ", " + std::to_string(value)
-		+ "); ";
-
-	testDB->make_query(query);
+	// Заполняем таблицу.
+	const int test_1DimensionValue = 2;
+	const int test_2DimensionValue = 2;
+	const int test_3DimensionValue = 2;
+	const double test_value = 7.0;
+	for (auto i{ 0 }; i < test_1DimensionValue; ++i) {
+		for (auto j{ 0 }; j < test_1DimensionValue; ++j) {
+			for (auto k{ 0 }; k < test_1DimensionValue; ++k) {
+				if (testDB->insert_table_3d(i, j, k, test_value, table_name) == QueryStatus::Success) {
+					std::string message = "Data is added successfully : (" + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + ", "
+						+ std::to_string(test_value) + ")";
+					std::cout << message << std::endl;
+				}
+				else {
+					std::string message = "Error at adding data: (" + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + ", "
+						+ std::to_string(test_value) + ")";
+					std::cout << message << std::endl;
+				}
+			}
+		}
+	}
 }
