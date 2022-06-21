@@ -14,13 +14,13 @@ protected:
 	bool _isOpen{ false };	/**< статус подключени€ к базе данных */
 	std::string _message;	/**< отладочное сообщение */
 
-	virtual ~IDataBase() = default;
-
 	/** ћетод открывает соединение с базой данных. */
 	virtual std::any connect() = 0;
 
 	/** ћетод закрывает соединение с базой данных. */
 	virtual void disconnect() = 0;
+public:
+	virtual ~IDataBase() = default;
 
 	/** ћетод возвращает статус соединени€. */
 	virtual bool get_connection_status() const = 0;
@@ -30,4 +30,10 @@ protected:
 
 	/** ћетод выполн€ет запроса к базе данных. */
 	virtual QueryStatus make_query(const std::string& query) = 0;
+
+	/** ћетод создает таблицу дл€ записи 3-х мерного массива. */
+	virtual QueryStatus make_table_3d(const std::string& table_name) = 0;
+
+	/** ћетод добавл€ет вещественные данные в таблицу с 3-х мерным массивом. */
+	virtual QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) = 0;
 };

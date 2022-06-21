@@ -31,7 +31,7 @@ private:
 	void disconnect() override;
 
 public:
-	DataBase(const std::string& path);
+	explicit DataBase(const std::string& path);
 	~DataBase();
 
 	/** ћетод возвращает статус соединени€. */
@@ -41,10 +41,10 @@ public:
 	std::string get_error_message() const override;
 
 	/** ћетод создает таблицу дл€ записи 3-х мерного массива. */
-	QueryStatus make_table_3d(const std::string& table_name);
+	QueryStatus make_table_3d(const std::string& table_name) override;
 
 	/** ћетод добавл€ет вещественные данные в таблицу с 3-х мерным массивом. */
-	QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name);
+	QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) override;
 
 	/** ¬ыполнение запроса к базе данных. */
 	QueryStatus make_query(const std::string& query) override;

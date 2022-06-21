@@ -3,17 +3,24 @@
 */
 
 #include "DataBase.h"
+#include "Timer.hpp"
 
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
 
 
+void insertData(IDataBase* testDB, const std::string& table_name, int test_1DimensionSize, int test_2DimensionSize, int test_3DimensionSize);
+
 int main() {
 
-	// Создаем файл базы данных.
 	const std::string dbPath = "test_db.db";
-	auto testDB = std::make_unique<DataBase>(dbPath);
+	// Удаляем старую версию БД, т.к. функция выполняет только тест записи в новую базу данных.
+	std::filesystem::remove(dbPath);
+
+	// Создаем файл базы данных.
+	IDataBase* testDB = new DataBase(dbPath);
 	if (testDB->get_connection_status()) {
 		std::cout << "Successful connection with data base " << dbPath << std::endl;
 	}
@@ -22,35 +29,44 @@ int main() {
 		return 1;
 	}
 
-	// Создаем таблицу.
-	const std::string table_name = "TestTable";
-	if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
-		std::cout << "Table is made successfully: " << table_name << std::endl;
-	}
-	else {
-		std::cout << "Errror at creating table: " << table_name << std::endl;
-		return 1;
+	// Создаем таблицу с малым объемом данных.
+	{
+		const std::string table_name = "SmallData";
+		if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
+			std::cout << "Table is made successfully: " << table_name << std::endl;
+		}
+		else {
+			std::cout << "Errror at creating table: " << table_name << std::endl;
+			return 1;
+		}
+		// Заполняем таблицу с большим объемом данных.
+		int test_1DimensionSize = 2;
+		int test_2DimensionSize = 2;
+		int test_3DimensionSize = 2;
+		Timer timer;
+
+		insertData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
 	}
 
-	// Заполняем таблицу.
-	const int test_1DimensionValue = 2;
-	const int test_2DimensionValue = 2;
-	const int test_3DimensionValue = 2;
-	const double test_value = 7.0;
-	for (auto i{ 0 }; i < test_1DimensionValue; ++i) {
-		for (auto j{ 0 }; j < test_1DimensionValue; ++j) {
-			for (auto k{ 0 }; k < test_1DimensionValue; ++k) {
-				if (testDB->insert_table_3d(i, j, k, test_value, table_name) == QueryStatus::Success) {
-					std::string message = "Data is added successfully : (" + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + ", "
-						+ std::to_string(test_value) + ")";
-					std::cout << message << std::endl;
-				}
-				else {
-					std::string message = "Error at adding data: (" + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + ", "
-						+ std::to_string(test_value) + ")";
-					std::cout << message << std::endl;
-				}
-			}
+
+	// Создаем таблицу с большим объемом данных.
+	{
+		const std::string table_name = "BigData";
+		if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
+			std::cout << "Table is made successfully: " << table_name << std::endl;
 		}
+		else {
+			std::cout << "Errror at creating table: " << table_name << std::endl;
+			return 1;
+		}
+		// Заполняем таблицу с большим объемом данных.
+		int test_1DimensionSize = 37;
+		int test_2DimensionSize = 163;
+		int test_3DimensionSize = 50;
+		Timer timer;
+
+		insertData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
 	}
+
+	delete testDB;
 }
