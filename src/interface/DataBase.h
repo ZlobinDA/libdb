@@ -33,6 +33,9 @@ private:
 	/** Отключаем синхронизацию с операционной системой */
 	void disable_synchronous();
 
+	/** Включаем хранение журнала операций в оперативной памяти. */
+	void enable_journalInMemory();
+
 public:
 	explicit DataBase(const std::string& path);
 	~DataBase();

@@ -17,8 +17,12 @@ void DataBase::disconnect() {
 }
 
 void DataBase::disable_synchronous() {
-	// Отключаем синхронизацию с операционной системой
 	const std::string query = "PRAGMA synchronous = OFF";
+	make_query(query);
+}
+
+void DataBase::enable_journalInMemory() {
+	const std::string query = "PRAGMA journal_mode = MEMORY";
 	make_query(query);
 }
 
@@ -32,6 +36,7 @@ DataBase::DataBase(const std::string& path) : _path{ path } {
 	else {
 		_isOpen = true;
 		disable_synchronous();
+		enable_journalInMemory();
 	}
 }
 
