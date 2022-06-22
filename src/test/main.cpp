@@ -31,6 +31,7 @@ int main() {
 
 	// Создаем таблицу с малым объемом данных.
 	{
+		std::cout << "Test 1. Small data table test" << std::endl;
 		const std::string table_name = "SmallData";
 		if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
 			std::cout << "Table is made successfully: " << table_name << std::endl;
@@ -51,6 +52,8 @@ int main() {
 
 	// Создаем таблицу с большим объемом данных.
 	{
+		std::cout << std::endl;
+		std::cout << "Test 2. Big data table test" << std::endl;
 		const std::string table_name = "BigData";
 		if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
 			std::cout << "Table is made successfully: " << table_name << std::endl;
