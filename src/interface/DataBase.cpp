@@ -16,6 +16,12 @@ void DataBase::disconnect() {
 	sqlite3_close(_dataBase);
 }
 
+void DataBase::disable_synchronous() {
+	// Отключаем синхронизацию с операционной системой
+	const std::string query = "PRAGMA synchronous = OFF";
+	make_query(query);
+}
+
 DataBase::DataBase(const std::string& path) : _path{ path } {
 	if (std::any_cast<int>(connect())) {
 #ifdef _DEBUG
@@ -25,6 +31,7 @@ DataBase::DataBase(const std::string& path) : _path{ path } {
 	}
 	else {
 		_isOpen = true;
+		disable_synchronous();
 	}
 }
 

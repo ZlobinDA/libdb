@@ -30,6 +30,9 @@ private:
 	/** Закрываем файл с базой данных. */
 	void disconnect() override;
 
+	/** Отключаем синхронизацию с операционной системой */
+	void disable_synchronous();
+
 public:
 	explicit DataBase(const std::string& path);
 	~DataBase();
