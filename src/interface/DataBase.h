@@ -23,6 +23,7 @@ class DataBase : public IDataBase {
 private:
 	std::string _path;				/**< полный путь до файла базы данных */
 	sqlite3* _dataBase{ nullptr };	/**< дескриптор базы данных */
+	sqlite3_stmt* _stmt;
 
 	/** Открываем файл с базой данных. */
 	std::any connect() override;
@@ -35,6 +36,9 @@ private:
 
 	/** Включаем хранение журнала операций в оперативной памяти. */
 	void enable_journalInMemory();
+
+	/** Испольхуем шаблон для запроса. */
+	void use_prepared_statement(const std::string& table_name) override;
 
 public:
 	explicit DataBase(const std::string& path);
@@ -51,6 +55,9 @@ public:
 
 	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
 	QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) override;
+
+	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
+	void insert_table(int index1, int index2, int index3, double value, const std::string& name) override;
 
 	/** Выполнение запроса к базе данных. */
 	QueryStatus make_query(const std::string& query) override;

@@ -11,6 +11,10 @@ std::any DataBase::connect() {
 }
 
 void DataBase::disconnect() {
+
+
+	sqlite3_finalize(_stmt);
+
 	// Закрывающий вызов sqlite3_close() нужен в любом случае,
 	//  даже при ошибке sqlite3_open().
 	sqlite3_close(_dataBase);
@@ -24,6 +28,22 @@ void DataBase::disable_synchronous() {
 void DataBase::enable_journalInMemory() {
 	const std::string query = "PRAGMA journal_mode = MEMORY";
 	make_query(query);
+}
+
+void DataBase::use_prepared_statement(const std::string& table_name) {
+	std::string query = "INSERT INTO " + table_name
+		+ "(" + index1_name.data()
+		+ ", " + index2_name.data()
+		+ ", " + index3_name.data()
+		+ ", " + value_name.data() + ") "  \
+		"VALUES (@"	+ index1_name.data()
+		+ ", @"		+ index2_name.data()
+		+ ", @"		+ index3_name.data()
+		+ ", @"		+ value_name.data()
+		+ "); ";
+	const int nBytes = 256;
+	const char* tail = 0;
+	sqlite3_prepare_v2(_dataBase, query.c_str(), nBytes, &_stmt, &tail);
 }
 
 DataBase::DataBase(const std::string& path) : _path{ path } {
@@ -79,6 +99,16 @@ QueryStatus DataBase::insert_table_3d(int index1, int index2, int index3, double
 		+ "); ";
 
 	return make_query(query);
+}
+
+void DataBase::insert_table(int index1, int index2, int index3, double value, const std::string& name) {
+	sqlite3_bind_text(_stmt, 1, std::to_string(index1).c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(_stmt, 2, std::to_string(index2).c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(_stmt, 3, std::to_string(index3).c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_bind_text(_stmt, 4, std::to_string(value).c_str(), -1, SQLITE_TRANSIENT);
+	sqlite3_step(_stmt);
+	sqlite3_clear_bindings(_stmt);
+	sqlite3_reset(_stmt);
 }
 
 QueryStatus DataBase::make_query(const std::string& query) {
