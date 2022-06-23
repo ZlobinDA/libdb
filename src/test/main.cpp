@@ -90,36 +90,9 @@ int main() {
 #endif
 
 	// Тест 3. Создаем 6 таблиц с большим объемом данных.
-//#define TEST3
-#ifdef TEST3
-	{
-		std::cout << std::endl;
-		std::cout << "Test 3. Six big data tables test" << std::endl;
-		Timer timer;
-		const int tablesNumber = 6;
-		for (auto i{ 0 }; i < tablesNumber; ++i) {
-			std::string table_name = "BigData" + std::to_string(i);
-			if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
-				std::cout << "Table is made successfully: " << table_name << std::endl;
-			}
-			else {
-				std::cout << "Errror at creating table: " << table_name << std::endl;
-				return 1;
-			}
-			// Заполняем таблицу с большим объемом данных.
-			int test_1DimensionSize = 37;
-			int test_2DimensionSize = 163;
-			int test_3DimensionSize = 50;
-
-			insertData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
-		}
-	}
-#endif
-
-	// Тест 4. Создаем 6 таблиц с большим объемом данных.
 	//  При вставке данных испольуем подготовку данных.
-#define TEST4
-#ifdef TEST4
+#define TEST3
+#ifdef TEST3
 	{
 		std::cout << std::endl;
 		std::cout << "Test 4. Six big data tables test. Using prepared statement" << std::endl;

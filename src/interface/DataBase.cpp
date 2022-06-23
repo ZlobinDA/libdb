@@ -84,24 +84,7 @@ QueryStatus DataBase::make_table_3d(const std::string& table_name) {
 	return make_query(query);
 }
 
-QueryStatus DataBase::insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) {
-	// Внимание! Увеличение номера строки (id) происходит автоматически.
-	std::string query = "INSERT INTO " + name
-		+ "("  + index1_name.data()
-		+ ", " + index2_name.data()
-		+ ", " + index3_name.data()
-		+ ", " + value_name.data() + ") "  \
-		"VALUES ("
-		+ std::to_string(index1)
-		+ ", " + std::to_string(index2)
-		+ ", " + std::to_string(index3)
-		+ ", " + std::to_string(value)
-		+ "); ";
-
-	return make_query(query);
-}
-
-void DataBase::insert_table(int index1, int index2, int index3, double value, const std::string& name) {
+void DataBase::insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) {
 	sqlite3_bind_text(_stmt, 1, std::to_string(index1).c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_text(_stmt, 2, std::to_string(index2).c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_text(_stmt, 3, std::to_string(index3).c_str(), -1, SQLITE_TRANSIENT);
@@ -114,8 +97,8 @@ void DataBase::insert_table(int index1, int index2, int index3, double value, co
 QueryStatus DataBase::make_query(const std::string& query) {
 	char* error = 0;
 	if (sqlite3_exec(_dataBase, query.c_str(), nullptr, nullptr, &error)) {
-		_message.clear();
-		_message = error;
+		_errorMessage.clear();
+		_errorMessage = error;
 		sqlite3_free(error);
 		return QueryStatus::Error;
 	}

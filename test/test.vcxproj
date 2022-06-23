@@ -154,7 +154,6 @@
   <ItemGroup>
     <ClCompile Include="..\src\test\insertPreparedData.cpp" />
     <ClCompile Include="..\src\test\main.cpp" />
-    <ClCompile Include="..\src\test\insertData.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\test\Timer.hpp" />

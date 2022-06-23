@@ -15,7 +15,7 @@ void insertPreparedData(IDataBase* testDB, const std::string& table_name, int te
 		for (auto j{ 1 }; j <= test_2DimensionSize; ++j) {
 			for (auto k{ 1 }; k <= test_3DimensionSize; ++k) {
 				double test_value = rand();
-				testDB->insert_table(i, j, k, test_value, table_name);
+				testDB->insert_table_3d(i, j, k, test_value, table_name);
 			}
 		}
 	}

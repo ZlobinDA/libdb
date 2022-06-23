@@ -54,10 +54,7 @@ public:
 	QueryStatus make_table_3d(const std::string& table_name) override;
 
 	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
-	QueryStatus insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) override;
-
-	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
-	void insert_table(int index1, int index2, int index3, double value, const std::string& name) override;
+	void insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) override;
 
 	/** Выполнение запроса к базе данных. */
 	QueryStatus make_query(const std::string& query) override;
