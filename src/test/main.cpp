@@ -10,7 +10,11 @@
 #include <memory>
 #include <string>
 
-void insertData(IDataBase*, const std::string&, int, int, int);
+
+extern "C" {
+	void model();
+}
+
 void insertPreparedData(IDataBase*, const std::string&, int, int, int);
 
 int main() {
@@ -32,15 +36,10 @@ int main() {
 		return 1;
 	}
 
-	// Создаем файл базы данных.
-	IDataBase* testDB = new DataBase(dbPath);
-	if (testDB->get_connection_status()) {
-		std::cout << "Successful connection with data base " << dbPath << std::endl;
-	}
-	else {
-		std::cout << "Error in connection with data base " << dbPath << std::endl;
-		return 1;
-	}
+
+
+
+	model();
 
 	// Тест 1. Создаем таблицу с малым объемом данных.
 //#define TEST1
@@ -61,37 +60,13 @@ int main() {
 		int test_3DimensionSize = 2;
 		Timer timer;
 
-		insertData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
-	}
-#endif
-
-	// Тест 2. Создаем таблицу с большим объемом данных.
-//#define TEST2
-#ifdef TEST2
-	{
-		std::cout << std::endl;
-		std::cout << "Test 2. Big data table test" << std::endl;
-		const std::string table_name = "BigData";
-		if (testDB->make_table_3d(table_name) == QueryStatus::Success) {
-			std::cout << "Table is made successfully: " << table_name << std::endl;
-		}
-		else {
-			std::cout << "Errror at creating table: " << table_name << std::endl;
-			return 1;
-		}
-		// Заполняем таблицу с большим объемом данных.
-		int test_1DimensionSize = 37;
-		int test_2DimensionSize = 163;
-		int test_3DimensionSize = 50;
-		Timer timer;
-
-		insertData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
+		insertPreparedData(testDB, table_name, test_1DimensionSize, test_2DimensionSize, test_3DimensionSize);
 	}
 #endif
 
 	// Тест 3. Создаем 6 таблиц с большим объемом данных.
 	//  При вставке данных испольуем подготовку данных.
-#define TEST3
+//#define TEST3
 #ifdef TEST3
 	{
 		std::cout << std::endl;
@@ -121,5 +96,5 @@ int main() {
 	std::cout << "Press any key for exit" << std::endl;
 	std::cin.get();
 
-	delete testDB;
+	//delete testDB;
 }

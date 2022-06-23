@@ -28,11 +28,11 @@ public:
 	virtual std::string get_error_message() const = 0;
 	/** Метод выполняет запроса к базе данных. */
 	virtual QueryStatus make_query(const std::string& query) = 0;
-
 	/** Метод создает таблицу для записи 3-х мерного массива. */
+	// @todo Избавиться от хардкода в названии столбцов таблицы
 	virtual QueryStatus make_table_3d(const std::string& table_name) = 0;
-
 	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
+	// @todo Сделать универсальную функцию для любого количества элементов.
 	virtual void insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) = 0;
 
 	virtual void use_prepared_statement(const std::string& table_name) = 0;
