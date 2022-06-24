@@ -164,8 +164,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\test\insertPreparedData.cpp" />
     <ClCompile Include="..\src\test\main.cpp" />
+    <ClCompile Include="..\src\test\tools.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\test\Timer.hpp" />

@@ -33,7 +33,5 @@ public:
 	virtual QueryStatus make_table_3d(const std::string& table_name) = 0;
 	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
 	// @todo Сделать универсальную функцию для любого количества элементов.
-	virtual void insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) = 0;
-
-	virtual void use_prepared_statement(const std::string& table_name) = 0;
+	virtual void insert_table_3d(int index1, int index2, int index3, float value, const std::string& name) = 0;
 };

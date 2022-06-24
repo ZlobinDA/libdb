@@ -78,13 +78,13 @@ QueryStatus DataBase::make_table_3d(const std::string& table_name) {
 		" + index1_name.data() + " INT, \
 		" + index2_name.data() + " INT, \
 		" + index3_name.data() + " INT, \
-		" + value_name.data() + " REAL \
+		" + value_name.data() + " FLOAT \
 		);";
 
 	return make_query(query);
 }
 
-void DataBase::insert_table_3d(int index1, int index2, int index3, double value, const std::string& name) {
+void DataBase::insert_table_3d(int index1, int index2, int index3, float value, const std::string& name) {
 	sqlite3_bind_text(_stmt, 1, std::to_string(index1).c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_text(_stmt, 2, std::to_string(index2).c_str(), -1, SQLITE_TRANSIENT);
 	sqlite3_bind_text(_stmt, 3, std::to_string(index3).c_str(), -1, SQLITE_TRANSIENT);

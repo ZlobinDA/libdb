@@ -11,6 +11,7 @@ static std::map<std::string, std::unique_ptr<DataBase>> dataBases;
 // Функция, открывающая файл базы данных.
 extern "C" void openDataBase(char* dataBasePath) {
 	std::string path = dataBasePath;
+	// Все открытые БД хранятся в контейнере.
 	dataBases[path] = std::make_unique<DataBase>(path);
 }
 
@@ -27,28 +28,53 @@ extern "C" int getDataBaseConnectionStatus(char* dataBasePath) {
 }
 
 // Функция, создающая таблицу с заданным именем в указанной базе данных.
-extern "C" void makeTableInDataBase(char* dataBaseName, char* tableName) {
-
+extern "C" int makeTableInDataBase(char* dataBaseName, char* tableName) {
+	// Ищем БД у указанным именем в контейнере БД
+	auto it = dataBases.find(dataBaseName);
+	if (it != dataBases.end()) {
+		// Если БД найдена, создаем в БД таблицу с указанным именем.
+		if (it->second->make_table_3d(tableName) == QueryStatus::Success) {
+			return 0;
+		}
+	}
+	return 1;
 }
 
 // Функция, записывающая 3-х мерный массив в указанную таблицу.
-extern "C" void insertArrayInDataBase(size_t index1, size_t index2, size_t index3, float value, char* tableName) {
+extern "C" void insertArrayInDataBase(float* array, size_t size1, size_t size2, size_t size3, char * dataBaseName, char* tableName) {
+	// Ищем БД у указанным именем в контейнере БД
+	auto it = dataBases.find(dataBaseName);
+	if (it != dataBases.end()) {
+		it->second->use_prepared_statement(tableName);
 
+		std::string query = "BEGIN TRANSACTION";
+		size_t index{ 0 };
+		it->second->make_query(query);
+		for (size_t i{ 1 }; i <= size1; ++i) {
+			for (size_t j{ 1 }; j <= size2; ++j) {
+				for (size_t k{ 1 }; k <= size3; ++k) {
+					if (index > size1 * size2 * size3) {
+						// Выход за границы массива.
+						break;
+					}
+					float value = array[index];
+					++index;
+					it->second->insert_table_3d(i, j, k, value, tableName);
+				}
+			}
+		}
 
-	//testDB->use_prepared_statement(table_name);
-
-	//std::string query = "BEGIN TRANSACTION";
-	//testDB->make_query(query);
-
-	//testDB->insert_table_3d(index1, index2, index3, test_value, table_name);
-
-	//query.clear();
-	//query = "END TRANSACTION";
-	//testDB->make_query(query);
+		query.clear();
+		query = "END TRANSACTION";
+		it->second->make_query(query);
+	}
 }
 
 // Функция, закрывающая файл базы данных.
 extern "C" void closeDataBase(char* dataBasePath) {
-
-
+	// Ищем БД у указанным именем в контейнере БД
+	auto it = dataBases.find(dataBasePath);
+	if (it != dataBases.end()) {
+		dataBases.erase(it);
+	}
 }

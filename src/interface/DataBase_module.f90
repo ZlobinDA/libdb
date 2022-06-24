@@ -3,21 +3,41 @@
 module dataBase_module
  implicit none
 
+
  interface
 
+  ! »нтерфейс функци€, устанавливающей соединение с базой данных.
   subroutine openDataBase(dataBasePath) bind (C, name = "openDataBase")
    use iso_c_binding, only: c_char
    implicit none
    character(c_char) :: dataBasePath
   end subroutine openDataBase
 
-  subroutine insert_dataBase(dataBaseName, index1, index2, index3, value) bind (C, name = "insert_dataBase")
-   use iso_c_binding, only: c_size_t, c_float
+  ! »нтерфейс функции, создающей таблицу в базе данных.
+  subroutine makeTableInDataBase(dataBaseName, tableName) bind (C, name = "makeTableInDataBase")
+   use iso_c_binding, only: c_char
    implicit none
-   integer(c_size_t), value :: dataBaseName, index1, index2, index3
-   real(c_float), value :: value
-  end subroutine insert_dataBase
+   character(c_char) :: dataBaseName, tableName
+  end subroutine makeTableInDataBase
+
+  ! »нтерфейс функции, добавл€ющей массив в таблицу базы данных.
+  subroutine insertArrayInDataBase(array, size1, size2, size3, dataBaseName, tableName) bind (C, name = "insertArrayInDataBase")
+   use iso_c_binding, only: c_char, c_size_t, c_float
+   implicit none
+   character(c_char) :: dataBaseName, tableName
+   integer(c_size_t), value :: size1, size2, size3
+   real(c_float), dimension(size1, size2, size3) :: array
+  end subroutine insertArrayInDataBase
+
+  ! »нтерфейс функции, закрывающей соединение с базой данных.
+  subroutine closeDataBase(dataBasePath) bind (C, name = "closeDataBase")
+   use iso_c_binding, only: c_char
+   implicit none
+   character(c_char) :: dataBasePath
+  end subroutine closeDataBase
+
  end interface
+
 
  contains
 
