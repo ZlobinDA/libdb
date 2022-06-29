@@ -2,7 +2,8 @@
 ! Имитация расчетной модели
 subroutine model() bind (C, name = "model")
 
- use dataBase_module, only: openDataBase, makeTableInDataBase, insertArrayInDataBase, closeDataBase, c_message
+ use dataBase_module, only: openDataBase, makeTableInDataBase, insertArrayInDataBase, closeDataBase
+ use env_module, only: c_message
 
  implicit none
  integer(4), parameter :: small_1DimensionSize = 2

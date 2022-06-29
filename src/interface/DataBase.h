@@ -8,8 +8,9 @@
 
 #include <sqlite3.h>
 
-#include <string>
+
 #include <memory>
+#include <string>
 #include <variant>
 
 /** Названия колонок таблицы */
