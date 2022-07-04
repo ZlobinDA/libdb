@@ -43,18 +43,28 @@ public:
 	bool get_connection_status() const override;
 	/** ћетод возвращает описание ошибки, возникшей при выполнении операции. */
 	std::string get_error_message() const override;
+
 	/** ћетод создает таблицу дл€ записи 3-х мерного массива. */
 	QueryStatus make_table_3d(const std::string& table_name) override;
 	/** ћетод создает таблицу дл€ записи 2-х мерного массива. */
 	QueryStatus make_table_2d(const std::string& table_name) override;
+	/** ћетод создает таблицу дл€ записи 1-о мерного массива. */
+	QueryStatus make_table_1d(const std::string& table_name) override;
+
 	/** ћетод настраивает базу данных дл€ использовани€ шаблона дл€ записи трехмерного массива. */
 	void use_prepared_statement_3d(const std::string& table_name);
 	/** ћетод настраивает базу данных дл€ использовани€ шаблона дл€ записи двухмерного массива. */
 	void use_prepared_statement_2d(const std::string& table_name);
+	/** ћетод настраивает базу данных дл€ использовани€ шаблона дл€ записи одномерного массива. */
+	void use_prepared_statement_1d(const std::string& table_name);
+
 	/** ћетод добавл€ет вещественные данные в таблицу с 3-х мерным массивом. */
 	void insert_table_3d(int index1, int index2, int index3, float value, const std::string& name) override;
 	/** ћетод добавл€ет вещественные данные в таблицу с 2-х мерным массивом. */
 	void insert_table_2d(int index1, int index2, float value, const std::string& name) override;
+	/** ћетод добавл€ет вещественные данные в таблицу с 1-м мерным массивом. */
+	void insert_table_1d(int index1, float value, const std::string& name) override;
+
 	/** ¬ыполнение запроса к базе данных. */
 	QueryStatus make_query(const std::string& query) override;
 };

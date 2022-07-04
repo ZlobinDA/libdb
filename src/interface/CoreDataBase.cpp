@@ -53,6 +53,19 @@ extern "C" int dataBase_makeTwoDimensionTable(char* dataBaseName, char* tableNam
 	return 1;
 }
 
+// Функция, создающая таблицу с заданным именем в указанной базе данных.
+extern "C" int dataBase_makeSingleDimensionTable(char* dataBaseName, char* tableName) {
+	// Ищем БД у указанным именем в контейнере БД
+	auto it = dataBases.find(dataBaseName);
+	if (it != dataBases.end()) {
+		// Если БД найдена, создаем в БД таблицу с указанным именем.
+		if (it->second->make_table_1d(tableName) == QueryStatus::Success) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
 // Функция, записывающая 3-х мерный массив в указанную таблицу.
 extern "C" void dataBase_insertThreeDimensionArray(float* array, size_t size1, size_t size2, size_t size3, char* dataBaseName, char* tableName) {
 	// Ищем БД у указанным именем в контейнере БД
@@ -103,6 +116,32 @@ extern "C" void dataBase_insertTwoDimensionArray(float* array, size_t size1, siz
 				++index;
 				it->second->insert_table_2d(i, j, value, tableName);
 			}
+		}
+
+		query.clear();
+		query = "END TRANSACTION";
+		it->second->make_query(query);
+	}
+}
+
+// Функция, записывающая 1-о мерный массив в указанную таблицу.
+extern "C" void dataBase_insertSingleDimensionArray(float* array, size_t size1, char* dataBaseName, char* tableName) {
+	// Ищем БД у указанным именем в контейнере БД
+	auto it = dataBases.find(dataBaseName);
+	if (it != dataBases.end()) {
+		it->second->use_prepared_statement_1d(tableName);
+
+		std::string query = "BEGIN TRANSACTION";
+		size_t index{ 0 };
+		it->second->make_query(query);
+		for (size_t i{ 1 }; i <= size1; ++i) {
+			if (index > size1) {
+				// Выход за границы массива.
+				break;
+			}
+			float value = array[index];
+			++index;
+			it->second->insert_table_1d(i, value, tableName);
 		}
 
 		query.clear();

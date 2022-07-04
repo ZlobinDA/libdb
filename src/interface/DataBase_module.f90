@@ -27,6 +27,13 @@ module dataBase_module
    character(c_char) :: dataBaseName, tableName
   end subroutine dataBase_makeTwoDimensionTable
 
+  ! »нтерфейс функции, создающей одномерную таблицу в базе данных.
+  subroutine dataBase_makeSingleDimensionTable(dataBaseName, tableName) bind (C, name = "dataBase_makeSingleDimensionTable")
+   use iso_c_binding, only: c_char
+   implicit none
+   character(c_char) :: dataBaseName, tableName
+  end subroutine dataBase_makeSingleDimensionTable
+
   ! »нтерфейс функции, добавл€ющей массив в трехмерную таблицу базы данных.
   subroutine dataBase_insertThreeDimensionArray(array, size1, size2, size3, dataBaseName, tableName) bind (C, name = "dataBase_insertThreeDimensionArray")
    use iso_c_binding, only: c_char, c_size_t, c_float
@@ -44,6 +51,15 @@ module dataBase_module
    integer(c_size_t), value :: size1, size2
    real(c_float), dimension(size1, size2) :: array
   end subroutine dataBase_insertTwoDimensionArray
+
+  ! »нтерфейс функции, добавл€ющей массив в одномерную таблицу базы данных.
+  subroutine dataBase_insertSingleDimensionArray(array, size1, dataBaseName, tableName) bind (C, name = "dataBase_insertSingleDimensionArray")
+   use iso_c_binding, only: c_char, c_size_t, c_float
+   implicit none
+   character(c_char) :: dataBaseName, tableName
+   integer(c_size_t), value :: size1
+   real(c_float), dimension(size1) :: array
+  end subroutine dataBase_insertSingleDimensionArray
 
   ! »нтерфейс функции, закрывающей соединение с базой данных.
   subroutine dataBase_close(dataBasePath) bind (C, name = "dataBase_close")
