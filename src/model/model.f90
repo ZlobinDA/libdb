@@ -2,7 +2,9 @@
 ! Имитация расчетной модели
 subroutine model() bind (C, name = "model")
 
- use dataBase_module, only: dataBase_open, dataBase_makeThreeDimensionTable, dataBase_insertThreeDimensionArray, dataBase_close
+ use dataBase_module, only: dataBase_open, dataBase_close, & 
+    dataBase_makeThreeDimensionTable, dataBase_insertThreeDimensionArray, & 
+    dataBase_makeTwoDimensionTable, dataBase_insertTwoDimensionArray
  use env_module, only: c_message
 
  implicit none
@@ -34,7 +36,7 @@ subroutine model() bind (C, name = "model")
  ! Удаляем старую версию базы данных.
  call removeDataBase(c_message(dataBasePath))
 
-#define TEST1
+!#define TEST1
 ! Тест 1. Запись малого объема данных.
 #ifdef TEST1
  print*, "Test1. Small data"
@@ -76,6 +78,29 @@ subroutine model() bind (C, name = "model")
  tableName = "bigData"
  call dataBase_makeThreeDimensionTable(c_message(dataBasePath), c_message(tableName))
  call dataBase_insertThreeDimensionArray(big_array, big_1DimensionSize, big_2DimensionSize, big_3DimensionSize, c_message(dataBasePath), c_message(tableName))
+ call dataBase_close(c_message(dataBasePath))
+#endif
+
+#define TEST3
+! Тест 3. Запись двумерного массива данных. Рандомные значения.
+#ifdef TEST3
+ print*, "Test3. Two dimension array"
+ ! Имитация выполнение расчета
+ value = 0.5
+ do j = 1, big_3DimensionSize
+  do k = 1, big_2DimensionSize
+   value = value + 1.0
+   index = k + big_2DimensionSize*(j - 1)
+   singleDimension_array(index) = value
+  end do
+ end do
+ ! Запись результатов в БД
+ call dataBase_open(c_message(dataBasePath))
+ tableName = "twoDimension"
+ call dataBase_makeTwoDimensionTable(c_message(dataBasePath), c_message(tableName))
+ index1 = big_2DimensionSize
+ index2 = big_3DimensionSize
+ call dataBase_insertTwoDimensionArray(singleDimension_array, index1, index2, c_message(dataBasePath), c_message(tableName))
  call dataBase_close(c_message(dataBasePath))
 #endif
 

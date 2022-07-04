@@ -45,10 +45,16 @@ public:
 	std::string get_error_message() const override;
 	/** Метод создает таблицу для записи 3-х мерного массива. */
 	QueryStatus make_table_3d(const std::string& table_name) override;
-	/** Метод настраивает базу данных для использования шаблона для запроса. */
-	void use_prepared_statement(const std::string& table_name);
+	/** Метод создает таблицу для записи 2-х мерного массива. */
+	QueryStatus make_table_2d(const std::string& table_name) override;
+	/** Метод настраивает базу данных для использования шаблона для записи трехмерного массива. */
+	void use_prepared_statement_3d(const std::string& table_name);
+	/** Метод настраивает базу данных для использования шаблона для записи двухмерного массива. */
+	void use_prepared_statement_2d(const std::string& table_name);
 	/** Метод добавляет вещественные данные в таблицу с 3-х мерным массивом. */
 	void insert_table_3d(int index1, int index2, int index3, float value, const std::string& name) override;
+	/** Метод добавляет вещественные данные в таблицу с 2-х мерным массивом. */
+	void insert_table_2d(int index1, int index2, float value, const std::string& name) override;
 	/** Выполнение запроса к базе данных. */
 	QueryStatus make_query(const std::string& query) override;
 };
