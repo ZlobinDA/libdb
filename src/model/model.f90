@@ -2,7 +2,7 @@
 ! Имитация расчетной модели
 subroutine model() bind (C, name = "model")
 
- use dataBase_module, only: openDataBase, makeTableInDataBase, insertArrayInDataBase, closeDataBase
+ use dataBase_module, only: dataBase_open, dataBase_makeThreeDimensionTable, dataBase_insertThreeDimensionArray, dataBase_close
  use env_module, only: c_message
 
  implicit none
@@ -15,10 +15,11 @@ subroutine model() bind (C, name = "model")
  integer(4), parameter :: big_2DimensionSize = 163
  integer(4), parameter :: big_3DimensionSize = 50
  real(4) :: big_array(big_1DimensionSize, big_2DimensionSize, big_3DimensionSize)
+ real(4) :: singleDimension_array(big_2DimensionSize*big_3DimensionSize)
 
  character(len = 32) :: tableName
  character(len = 16), parameter :: dataBasePath = "test_db.db"
- integer(4) :: i, j, k
+ integer(4) :: i, j, k, index, index1, index2, index3
  real(4) :: value
 
  interface
@@ -49,14 +50,14 @@ subroutine model() bind (C, name = "model")
  end do
  ! Запись результатов в БД
 
- call openDataBase(c_message(dataBasePath))
+ call dataBase_open(c_message(dataBasePath))
  tableName = "smallData"
- call makeTableInDataBase(c_message(dataBasePath), c_message(tableName))
- call insertArrayInDataBase(small_array, small_1DimensionSize, small_2DimensionSize, small_3DimensionSize, c_message(dataBasePath), c_message(tableName))
- call closeDataBase(c_message(dataBasePath))
+ call dataBase_makeThreeDimensionTable(c_message(dataBasePath), c_message(tableName))
+ call dataBase_insertThreeDimensionArray(small_array, small_1DimensionSize, small_2DimensionSize, small_3DimensionSize, c_message(dataBasePath), c_message(tableName))
+ call dataBase_close(c_message(dataBasePath))
 #endif
 
-#define TEST2
+!#define TEST2
 ! Тест 2. Запись малого объема данных. Рандомные значения.
 #ifdef TEST2
  print*, "Test2. Big data"
@@ -71,11 +72,11 @@ subroutine model() bind (C, name = "model")
   end do
  end do
  ! Запись результатов в БД
- call openDataBase(c_message(dataBasePath))
+ call dataBase_open(c_message(dataBasePath))
  tableName = "bigData"
- call makeTableInDataBase(c_message(dataBasePath), c_message(tableName))
- call insertArrayInDataBase(big_array, big_1DimensionSize, big_2DimensionSize, big_3DimensionSize, c_message(dataBasePath), c_message(tableName))
- call closeDataBase(c_message(dataBasePath))
+ call dataBase_makeThreeDimensionTable(c_message(dataBasePath), c_message(tableName))
+ call dataBase_insertThreeDimensionArray(big_array, big_1DimensionSize, big_2DimensionSize, big_3DimensionSize, c_message(dataBasePath), c_message(tableName))
+ call dataBase_close(c_message(dataBasePath))
 #endif
 
  return

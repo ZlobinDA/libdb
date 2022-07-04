@@ -7,34 +7,34 @@ module dataBase_module
  interface
 
   ! »нтерфейс функци€, устанавливающей соединение с базой данных.
-  subroutine openDataBase(dataBasePath) bind (C, name = "openDataBase")
+  subroutine dataBase_open(dataBasePath) bind (C, name = "dataBase_open")
    use iso_c_binding, only: c_char
    implicit none
    character(c_char) :: dataBasePath
-  end subroutine openDataBase
+  end subroutine dataBase_open
 
   ! »нтерфейс функции, создающей таблицу в базе данных.
-  subroutine makeTableInDataBase(dataBaseName, tableName) bind (C, name = "makeTableInDataBase")
+  subroutine dataBase_makeThreeDimensionTable(dataBaseName, tableName) bind (C, name = "dataBase_makeThreeDimensionTable")
    use iso_c_binding, only: c_char
    implicit none
    character(c_char) :: dataBaseName, tableName
-  end subroutine makeTableInDataBase
+  end subroutine dataBase_makeThreeDimensionTable
 
   ! »нтерфейс функции, добавл€ющей массив в таблицу базы данных.
-  subroutine insertArrayInDataBase(array, size1, size2, size3, dataBaseName, tableName) bind (C, name = "insertArrayInDataBase")
+  subroutine dataBase_insertThreeDimensionArray(array, size1, size2, size3, dataBaseName, tableName) bind (C, name = "dataBase_insertThreeDimensionArray")
    use iso_c_binding, only: c_char, c_size_t, c_float
    implicit none
    character(c_char) :: dataBaseName, tableName
    integer(c_size_t), value :: size1, size2, size3
    real(c_float), dimension(size1, size2, size3) :: array
-  end subroutine insertArrayInDataBase
+  end subroutine dataBase_insertThreeDimensionArray
 
   ! »нтерфейс функции, закрывающей соединение с базой данных.
-  subroutine closeDataBase(dataBasePath) bind (C, name = "closeDataBase")
+  subroutine dataBase_close(dataBasePath) bind (C, name = "dataBase_close")
    use iso_c_binding, only: c_char
    implicit none
    character(c_char) :: dataBasePath
-  end subroutine closeDataBase
+  end subroutine dataBase_close
 
  end interface
 

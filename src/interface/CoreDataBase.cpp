@@ -9,7 +9,7 @@
 static std::map<std::string, std::unique_ptr<DataBase>> dataBases;
 
 // Функция, открывающая файл базы данных.
-extern "C" void openDataBase(char* dataBasePath) {
+ extern "C" void dataBase_open(char* dataBasePath) {
 	std::string path = dataBasePath;
 	// Все открытые БД хранятся в контейнере.
 	dataBases[path] = std::make_unique<DataBase>(path);
@@ -28,7 +28,7 @@ extern "C" int getDataBaseConnectionStatus(char* dataBasePath) {
 }
 
 // Функция, создающая таблицу с заданным именем в указанной базе данных.
-extern "C" int makeTableInDataBase(char* dataBaseName, char* tableName) {
+extern "C" int dataBase_makeThreeDimensionTable(char* dataBaseName, char* tableName) {
 	// Ищем БД у указанным именем в контейнере БД
 	auto it = dataBases.find(dataBaseName);
 	if (it != dataBases.end()) {
@@ -41,7 +41,7 @@ extern "C" int makeTableInDataBase(char* dataBaseName, char* tableName) {
 }
 
 // Функция, записывающая 3-х мерный массив в указанную таблицу.
-extern "C" void insertArrayInDataBase(float* array, size_t size1, size_t size2, size_t size3, char * dataBaseName, char* tableName) {
+extern "C" void dataBase_insertThreeDimensionArray(float* array, size_t size1, size_t size2, size_t size3, char * dataBaseName, char* tableName) {
 	// Ищем БД у указанным именем в контейнере БД
 	auto it = dataBases.find(dataBaseName);
 	if (it != dataBases.end()) {
@@ -71,7 +71,7 @@ extern "C" void insertArrayInDataBase(float* array, size_t size1, size_t size2, 
 }
 
 // Функция, закрывающая файл базы данных.
-extern "C" void closeDataBase(char* dataBasePath) {
+extern "C" void dataBase_close(char* dataBasePath) {
 	// Ищем БД у указанным именем в контейнере БД
 	auto it = dataBases.find(dataBasePath);
 	if (it != dataBases.end()) {
