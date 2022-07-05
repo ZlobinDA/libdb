@@ -50,5 +50,7 @@
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath="..\src\interface\DataBase_module.f90"/>
 		<File RelativePath="..\src\model\env_module.f90"/>
-		<File RelativePath="..\src\model\model.f90"/></Filter></Files>
+		<File RelativePath="..\src\model\model.f90"/>
+		<File RelativePath="..\src\model\test1.f90"/>
+		<File RelativePath="..\src\model\test2.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>

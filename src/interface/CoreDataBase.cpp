@@ -2,62 +2,34 @@
 #include "DataBase.h"
 #include "IDataBase.h"
 
-#include <iostream>
 #include <map>
 #include <memory>
+#include <string>
+#include <vector>
 
-static std::map<std::string, std::unique_ptr<DataBase>> dataBases;
+namespace {
+	std::map<std::string, std::vector<float>> calculationData;
+	std::map<std::string, std::unique_ptr<DataBase>> calculationDataBase;
+}
 
 // Функция, открывающая файл базы данных.
-extern "C" void dataBase_open(char* dataBasePath) {
+void dataBase_open(const std::string& dataBasePath) {
 	std::string path = dataBasePath;
 	// Все открытые БД хранятся в контейнере.
-	dataBases[path] = std::make_unique<DataBase>(path);
+	calculationDataBase[path] = std::make_unique<DataBase>(path);
 }
 
 // 
-extern "C" int getDataBaseConnectionStatus(char* dataBasePath) {
+bool getDataBaseConnectionStatus(const std::string& dataBasePath) {
 	std::string path = dataBasePath;
-	if (dataBases[path]->get_connection_status()) {
-		std::cout << "Successful connection with data base " << path << std::endl;
-	}
-	else {
-		std::cout << "Error in connection with data base " << path << std::endl;;
-	}
-	return 0;
+	return calculationDataBase[path]->get_connection_status() ? true : false;
 }
 
 // Функция, создающая таблицу с заданным именем в указанной базе данных.
-extern "C" int dataBase_makeThreeDimensionTable(char* dataBaseName, char* tableName) {
+int dataBase_makeSingleDimensionTable(const std::string& dataBaseName, const std::string& tableName) {
 	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
-		// Если БД найдена, создаем в БД таблицу с указанным именем.
-		if (it->second->make_table_3d(tableName) == QueryStatus::Success) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
-// Функция, создающая таблицу с заданным именем в указанной базе данных.
-extern "C" int dataBase_makeTwoDimensionTable(char* dataBaseName, char* tableName) {
-	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
-		// Если БД найдена, создаем в БД таблицу с указанным именем.
-		if (it->second->make_table_2d(tableName) == QueryStatus::Success) {
-			return 0;
-		}
-	}
-	return 1;
-}
-
-// Функция, создающая таблицу с заданным именем в указанной базе данных.
-extern "C" int dataBase_makeSingleDimensionTable(char* dataBaseName, char* tableName) {
-	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
+	auto it = calculationDataBase.find(dataBaseName);
+	if (it != calculationDataBase.end()) {
 		// Если БД найдена, создаем в БД таблицу с указанным именем.
 		if (it->second->make_table_1d(tableName) == QueryStatus::Success) {
 			return 0;
@@ -66,69 +38,12 @@ extern "C" int dataBase_makeSingleDimensionTable(char* dataBaseName, char* table
 	return 1;
 }
 
-// Функция, записывающая 3-х мерный массив в указанную таблицу.
-extern "C" void dataBase_insertThreeDimensionArray(float* array, size_t size1, size_t size2, size_t size3, char* dataBaseName, char* tableName) {
-	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
-		it->second->use_prepared_statement_3d(tableName);
-
-		std::string query = "BEGIN TRANSACTION";
-		size_t index{ 0 };
-		it->second->make_query(query);
-		for (size_t i{ 1 }; i <= size1; ++i) {
-			for (size_t j{ 1 }; j <= size2; ++j) {
-				for (size_t k{ 1 }; k <= size3; ++k) {
-					if (index > size1 * size2 * size3) {
-						// Выход за границы массива.
-						break;
-					}
-					float value = array[index];
-					++index;
-					it->second->insert_table_3d(i, j, k, value, tableName);
-				}
-			}
-		}
-
-		query.clear();
-		query = "END TRANSACTION";
-		it->second->make_query(query);
-	}
-}
-
-// Функция, записывающая 2-х мерный массив в указанную таблицу.
-extern "C" void dataBase_insertTwoDimensionArray(float* array, size_t size1, size_t size2, char* dataBaseName, char* tableName) {
-	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
-		it->second->use_prepared_statement_2d(tableName);
-
-		std::string query = "BEGIN TRANSACTION";
-		size_t index{ 0 };
-		it->second->make_query(query);
-		for (size_t i{ 1 }; i <= size1; ++i) {
-			for (size_t j{ 1 }; j <= size2; ++j) {
-				if (index > size1 * size2) {
-					// Выход за границы массива.
-					break;
-				}
-				float value = array[index];
-				++index;
-				it->second->insert_table_2d(i, j, value, tableName);
-			}
-		}
-
-		query.clear();
-		query = "END TRANSACTION";
-		it->second->make_query(query);
-	}
-}
 
 // Функция, записывающая 1-о мерный массив в указанную таблицу.
-extern "C" void dataBase_insertSingleDimensionArray(float* array, size_t size1, char* dataBaseName, char* tableName) {
+void dataBase_insertSingleDimensionArray(const std::vector<float>& array, size_t size1, std::string& dataBaseName, std::string& tableName) {
 	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBaseName);
-	if (it != dataBases.end()) {
+	auto it = calculationDataBase.find(dataBaseName);
+	if (it != calculationDataBase.end()) {
 		it->second->use_prepared_statement_1d(tableName);
 
 		std::string query = "BEGIN TRANSACTION";
@@ -151,10 +66,33 @@ extern "C" void dataBase_insertSingleDimensionArray(float* array, size_t size1, 
 }
 
 // Функция, закрывающая файл базы данных.
-extern "C" void dataBase_close(char* dataBasePath) {
+void dataBase_close(const std::string& dataBasePath) {
 	// Ищем БД у указанным именем в контейнере БД
-	auto it = dataBases.find(dataBasePath);
-	if (it != dataBases.end()) {
-		dataBases.erase(it);
+	auto it = calculationDataBase.find(dataBasePath);
+	if (it != calculationDataBase.end()) {
+		calculationDataBase.erase(it);
 	}
+}
+
+extern "C" void shell_sendSingleDimensionArray(float* array, size_t size, const char* name) {
+	for (size_t i{ 0 }; i < size; ++i) {
+		calculationData[name].push_back(array[i]);
+	}
+}
+
+extern "C" void dataBase_insertData(const char* dataBaseName) {
+	std::string s_dataBaseName = dataBaseName;
+	dataBase_open(s_dataBaseName);
+	if (!getDataBaseConnectionStatus(s_dataBaseName)) {
+		return;
+	}
+
+	for (auto it = calculationData.begin(); it != calculationData.end(); ++it) {
+		std::string tableName = it->first;
+		dataBase_makeSingleDimensionTable(dataBaseName, tableName);
+		std::vector<float> dataArray = it->second;
+		size_t size = it->second.size();
+		dataBase_insertSingleDimensionArray(dataArray, size, s_dataBaseName, tableName);
+	}
+	dataBase_close(s_dataBaseName);
 }
