@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+#include <exception>
+#include <iostream>
+
 namespace {
 	std::map<std::string, std::vector<float>> calculationData;
 	std::map<std::string, std::unique_ptr<DataBase>> calculationDataBase;
@@ -76,7 +79,13 @@ void dataBase_close(const std::string& dataBasePath) {
 
 extern "C" void shell_sendSingleDimensionArray(float* array, size_t size, const char* name) {
 	for (size_t i{ 0 }; i < size; ++i) {
-		calculationData[name].push_back(array[i]);
+		try {
+			calculationData[name].push_back(array[i]);
+		}
+		catch (const std::exception& e) {
+			std::cout << "Error: " << e.what() << std::endl;
+			return;
+		}
 	}
 }
 

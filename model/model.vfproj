@@ -24,8 +24,8 @@
 				<Tool Name="VFPreBuildEventTool"/>
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration>
-		<Configuration Name="Release|Win32">
-				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" RuntimeLibrary="rtMultiThreadedDLL"/>
+		<Configuration Name="Release|Win32" OutputDirectory="$(SolutionDir)\bin\">
+				<Tool Name="VFFortranCompilerTool" SuppressStartupBanner="true" Preprocess="preprocessYes" RuntimeLibrary="rtMultiThreadedDLL"/>
 				<Tool Name="VFLinkerTool" LinkIncremental="linkIncrementalNo" SuppressStartupBanner="true" SubSystem="subSystemConsole"/>
 				<Tool Name="VFResourceCompilerTool"/>
 				<Tool Name="VFMidlTool" SuppressStartupBanner="true"/>
@@ -50,7 +50,9 @@
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath="..\src\interface\DataBase_module.f90"/>
 		<File RelativePath="..\src\model\env_module.f90"/>
+		<File RelativePath="..\src\model\INIFS.F90"/>
 		<File RelativePath="..\src\model\model.f90"/>
 		<File RelativePath="..\src\model\test1.f90"/>
-		<File RelativePath="..\src\model\test2.f90"/></Filter></Files>
+		<File RelativePath="..\src\model\test2.f90"/>
+		<File RelativePath="..\src\model\test3.f90"/></Filter></Files>
 	<Globals/></VisualStudioProject>

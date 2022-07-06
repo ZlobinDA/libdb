@@ -65,7 +65,6 @@ std::string DataBase::get_error_message() const {
 }
 
 QueryStatus DataBase::make_table_1d(const std::string& table_name) {
-	// Внимание! Номер строки (id) будет добавлен автоматически.
 	std::string query = "CREATE TABLE IF NOT EXISTS " + table_name + " ( \
 		" + index1_name.data() + " INT, \
 		" + value_name.data() + " FLOAT \
